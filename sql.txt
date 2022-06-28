@@ -1,0 +1,25 @@
+  select emp.DPT_DEPARTMENT_ID,emp.EMP_ID, EA.FILE_CONTENT ,
+  
+  CASE
+                    WHEN ( emp.emp_id=2010300106325388 and (DBMS_LOB.GETLENGTH(ea.FILE_CONTENT) > 0 AND ea.FILE_CONTENT IS NOT NULL) )--M.BILL_TYPE_ID = 4
+                    THEN 
+                    (select  ors.BASE64DECODE (REPLACE (ea.FILE_CONTENT, 'data:image/jpeg;base64,')) from PMIS.EMPLOYEE PE ,PMIS.EMP_ATTACHMENTS ea
+                    where PE.EMP_ID = 2010300106325388
+                    and  EA.EMP_ID=2010300106325388
+                    and EA.ATTACHMENT_TYPE_ID =3
+                    --and E.EMP_ID=2010300107333505 
+                    )
+                    ELSE
+                   (SELECT (ors.BASE64DECODE (LERI.REP_IMAGE)) FROM PMIS.L_EMP_REPLICA_IMAGE LERI)
+                     --'lorin'
+                    
+                 END
+                    AS signs from  pmis.employee emp , PMIS.L_DESIGNATION ld , PMIS.EMP_ATTACHMENTS ea
+                    where  (EMP.EMP_CODE =:p_EMPL_CODE OR :p_EMPL_CODE IS NULL )
+                    and EMP.EMP_ID=EA.EMP_ID
+                    and ea.ATTACHMENT_TYPE_ID=3
+                    and EMP.EMP_STATUS_ID=1
+                   -- and emp.DPT_DEPARTMENT_ID =2
+                   
+                   
+                   --dpt_id= 16 and code =014185
