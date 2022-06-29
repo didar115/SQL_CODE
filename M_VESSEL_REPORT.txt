@@ -1,0 +1,57 @@
+/* Formatted on 3/16/2022 11:03:18 AM (QP5 v5.287) */
+select mp.name as product,
+       mu.name as unit,
+       mird.demand_qty,
+       mird.RECEIVED_QTY,
+       --mvi.id,
+       null as stock_position,
+       mvi.maintenance_req_id,
+       mmr.request_number,
+       d.department_name as department,
+       cvessel.name as vessel,
+       vsl_emp.EMP_NAME Vessel_Master,
+--       emp.EMP_NAME as vessel_master,
+       --mmr.status as maintenance_status,
+       msc.name as maintenance_status,
+      mww.NAME as workshop,
+       mvi.job_number,
+       mir.requisition_number
+       
+   
+      
+  from mda.mw_vessel_inspections mvi,
+       mda.mw_inspection_requisition_dtls mird,
+       mda.mw_products mp,
+       mda.mw_units mu,
+       mda.mw_maintenance_reqs mmr,
+       PMIS.EMPLOYEE emp, 
+       pmis.l_department d,
+       mda.mw_inspection_requisitions mir,
+       mda.CPA_VESSELS cvessel,
+       mda.MW_STATUS_CONFIG msc,
+       MDA.MW_WORKSHOPS mww,
+       PMIS.EMPLOYEE vsl_emp
+       
+ where     mvi.id = mird.vessel_inspection_id(+)
+       and mird.product_id = mp.id(+)
+       and mird.unit_id = mu.id(+)
+       and mvi.maintenance_req_id = mmr.id(+)
+       and mmr.department_id = d.department_id(+)
+       and mmr.vessel_id = cvessel.id(+)
+       and mvi.workshop_id= mww.ID (+)
+       and MMR.STATUS = msc.STATUS_CODE (+)
+       and mvi.id = mir.vessel_inspection_id(+)
+       and mmr.VESSEL_MASTER_ID= emp.EMP_ID (+)
+       and cvessel.INCHARGE_EMP_ID = vsl_emp.EMP_ID(+)
+       
+       
+       and mvi.id = nvl ( :p_vessel_inspection_id, mvi.id)
+       and mvi.maintenance_req_id =
+              nvl ( :p_maintenance_req_id, mvi.maintenance_req_id)
+       and mird.requisition_id =
+              nvl ( :p_requisition_id, mird.requisition_id)
+       and mvi.job_number = nvl ( :p_job_number, mvi.job_number)
+
+       
+--        MDA.MW_MAINTENANCE_REQS MR vessel_id +  CPA_VESSELS vs vs.id   = vs.name  as vessel
+--        vs.INCHARGE_EMP_ID + pmis.emp_id = emp_name as vessel_master
