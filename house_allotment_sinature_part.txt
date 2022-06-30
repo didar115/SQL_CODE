@@ -1,0 +1,28 @@
+  SELECT e.emp_id,e.emp_name ,e.DPT_DEPARTMENT_ID,
+               CASE
+                  WHEN (    DBMS_LOB.GETLENGTH (ea.FILE_CONTENT) > 0
+                        AND ea.FILE_CONTENT IS NOT NULL)
+                  THEN
+                     ors.BASE64DECODE (
+                        REPLACE (ea.FILE_CONTENT, 'data:image/jpeg;base64,'))
+                  ELSE
+                     (SELECT (ors.BASE64DECODE (LERI.REP_IMAGE))
+                        FROM PMIS.L_EMP_REPLICA_IMAGE LERI)
+               END
+                  signature
+          FROM pmis.employee e,
+               cpa_security.sec_users su,
+               cpa_security.sec_user_roles sr,
+               cpa_security.sec_role r,
+               PMIS.EMP_ATTACHMENTS ea
+         WHERE     su.emp_id = e.emp_id
+               AND sr.user_id = su.user_id
+               AND sr.role_id = r.role_id
+               AND e.emp_id = ea.emp_id
+               AND r.role_key IN ('EXECUTIVE_ENGINEER')
+               and E.DPT_DEPARTMENT_ID = ( SELECT  DPT_DEPARTMENT_ID
+  FROM pmis.employee e
+ WHERE 
+  e.emp_code = NVL ( :p_emp_code, e.emp_code) )
+  and rownum<=1
+              
