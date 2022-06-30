@@ -1,5 +1,5 @@
 SELECT ROWNUM sl,
- (SELECT NAME FROM MDA.MW_VESSELS WHERE ID  =  R.VESSEL_ID) VESSEL,
+ (SELECT NAME FROM MDA.CPA_VESSELS WHERE ID  =  R.VESSEL_ID) VESSEL,
        D.NAME DEPARTMENT,
        (SELECT E.EMP_NAME
           FROM PMIS.EMPLOYEE E
@@ -14,7 +14,7 @@ SELECT ROWNUM sl,
   FROM MDA.MW_MAINTENANCE_REQS R,  MDA.MW_STATUS_CONFIG S,  MDA.MW_DEPARTMENTS D
  WHERE R.STATUS = S.STATUS_CODE AND R.DEPARTMENT_ID = D.ID
  
- and S.STATUS_CODE = nvl(:p_STATUS_CODE , s.status_code)
+ and S.STATUS_CODE = nvl(:p_vessel_status , s.status_code)
  and R.VESSEL_ID =nvl(:p_vessel_id , r.vessel_id)
- and R.CREATED_AT between nvl(:p_start_date , r.created_at) and nvl (:p_end_date , r.created_at)
- 
+ and (:p_from_date <= trunc(R.CREATED_AT) or :p_from_date is null) and 
+(:p_to_date >= trunc(R.CREATED_AT) or :p_to_date is null)
