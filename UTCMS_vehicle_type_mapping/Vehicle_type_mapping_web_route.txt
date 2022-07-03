@@ -1,0 +1,124 @@
+//Settings
+    Route::group(['prefix'=>'settings', 'as'=>'settings.'],  function () {
+        //Vehicle Type
+        Route::get('/vehicle-type', 'Settings\VehicleTypeController@index')->name('vehicle-type-index');
+        Route::post('/vehicle-type-post', 'Settings\VehicleTypeController@store')->name('vehicle-type-post');
+        Route::post('/vehicle-type-list', 'Settings\VehicleTypeController@dataList')->name('vehicle-type-list');
+        Route::get('/vehicle-type-edit/{id}', 'Settings\VehicleTypeController@edit')->name('vehicle-type-edit');
+        Route::put('/vehicle-type-edit/{id}', 'Settings\VehicleTypeController@update')->name('vehicle-type-update');
+
+        //Payment Type
+        Route::get('/payment-type', 'Settings\PaymentTypeController@index')->name('payment-type-index');
+        Route::post('/payment-type-post', 'Settings\PaymentTypeController@store')->name('payment-type-post');
+        Route::post('/payment-type-list', 'Settings\PaymentTypeController@dataList')->name('payment-type-list');
+        Route::get('/payment-type-edit/{id}', 'Settings\PaymentTypeController@edit')->name('payment-type-edit');
+        Route::put('/payment-type-edit/{id}', 'Settings\PaymentTypeController@update')->name('payment-type-update');
+
+        //Vehicle Class
+        Route::get('/vehicle-class', 'Settings\VehicleClassController@index')->name('vehicle-class-index');
+        Route::post('/vehicle-class-list', 'Settings\VehicleClassController@dataList')->name('vehicle-class-list');
+        Route::post('/vehicle-class-add', 'Settings\VehicleClassController@store')->name('vehicle-class-store');
+        Route::get('/vehicle-class-edit/{id}', 'Settings\VehicleClassController@edit')->name('vehicle-class-edit');
+        Route::put('/vehicle-class-edit/{id}', 'Settings\VehicleClassController@update')->name('vehicle-class-update');
+
+        //Roles
+        Route::get('/roles', 'Settings\RolesController@index')->name('role-index');
+        Route::post('/roles-list', 'Settings\RolesController@dataList')->name('roles-list');
+        Route::post('/roles-add', 'Settings\RolesController@store')->name('roles-store');
+        Route::get('/roles-edit/{id}', 'Settings\RolesController@edit')->name('roles-edit');
+        Route::put('/roles-edit/{id}', 'Settings\RolesController@update')->name('roles-update');
+
+        //Toll Shift
+        Route::get('/toll-shift', 'Settings\TollShiftController@index')->name('toll-shift-index');
+        Route::get('/ajax-get-bridge-end/{id}', 'Settings\TollShiftController@ajaxGetBridgeEnd')->name('ajax-get-bridge-end');
+        Route::get('/ajax-get-time-slot/{id}', 'Settings\TollShiftController@ajaxGetTimeslot')->name('ajax-get-time-slot');
+        Route::get('/ajax-get-counter/{id}', 'Settings\TollShiftController@ajaxGetCounter')->name('ajax-get-counter');
+        Route::post('/toll-shift-list', 'Settings\TollShiftController@dataList')->name('toll-shift-list');
+        Route::post('/toll-shift-add', 'Settings\TollShiftController@store')->name('toll-shift-store');
+        Route::get('/toll-shift-edit/{id}', 'Settings\TollShiftController@edit')->name('toll-shift-edit');
+        Route::put('/toll-shift-edit/{id}', 'Settings\TollShiftController@update')->name('toll-shift-update');
+
+        //Options
+        Route::get('/options', 'Settings\OptionsController@index')->name('options-index');
+        Route::post('/options-list', 'Settings\OptionsController@dataList')->name('options-list');
+        Route::post('/options-add', 'Settings\OptionsController@store')->name('options-store');
+        Route::get('/options-edit/{id}', 'Settings\OptionsController@edit')->name('options-edit');
+        Route::put('/options-edit/{id}', 'Settings\OptionsController@update')->name('options-update');
+
+        //Bank
+        Route::get('/bank-entry', 'Settings\BankEntryController@index')->name('bank-index');
+        Route::post('/bank-entry-list', 'Settings\BankEntryController@dataList')->name('bank-list');
+        Route::post('/bank-entry-add', 'Settings\BankEntryController@store')->name('bank-store');
+        Route::get('/bank-entry-edit/{id}', 'Settings\BankEntryController@edit')->name('bank-edit');
+        Route::put('/bank-entry-edit/{id}', 'Settings\BankEntryController@update')->name('bank-update');
+
+        //Time Slot
+        Route::get('/time-slot', 'Settings\TimeSlotController@index')->name('time-slot-index');
+        Route::post('/time-slot-list', 'Settings\TimeSlotController@dataList')->name('time-slot-list');
+        Route::post('/time-slot-add', 'Settings\TimeSlotController@store')->name('time-slot-store');
+        Route::get('/time-slot-edit', 'Settings\TimeSlotController@edit')->name('time-slot-edit');
+        Route::put('/time-slot-edit', 'Settings\TimeSlotController@update')->name('time-slot-update');
+
+        //Module-menu
+        Route::get('/module', 'Settings\ModuleMenuController@index')->name('module-menu-index');
+        Route::post('/module-add', 'Settings\ModuleMenuController@moduleStore')->name('module-store');
+        Route::post('/module-list', 'Settings\ModuleMenuController@moduleDataList')->name('module-list');
+        Route::get('/module-edit/{id}', 'Settings\ModuleMenuController@moduleEdit')->name('module-edit');
+        Route::put('/module-edit/{id}', 'Settings\ModuleMenuController@moduleUpdate')->name('module-update');
+        Route::get('/module-menu/{id}/{name}', 'Settings\ModuleMenuController@menuCreate')->name('menu-create');
+        Route::post('/menu-list/{id}', 'Settings\ModuleMenuController@menuDataList')->name('menu-list');
+        Route::post('/menu-add', 'Settings\ModuleMenuController@menuStore')->name('menu-store');
+        Route::get('/menu-edit/{id}/{menu_id}', 'Settings\ModuleMenuController@menuEdit')->name('menu-edit');
+        Route::put('/menu-edit/{id}', 'Settings\ModuleMenuController@menuUpdate')->name('menu-update');
+
+
+
+
+        //Brta Vehicle Type
+        Route::get('/brta-vehicle-type', 'Settings\BrtaVehicleTypeController@index')->name('brta-vehicle-type-index');
+        Route::post('/brta-vehicle-type-list', 'Settings\BrtaVehicleTypeController@dataList')->name('brta-vehicle-type-list');
+        Route::post('/brta-vehicle-type-add', 'Settings\BrtaVehicleTypeController@store')->name('brta-vehicle-type-store');
+        Route::get('/brta-vehicle-type-edit/{id}', 'Settings\BrtaVehicleTypeController@edit')->name('brta-vehicle-type-edit');
+        Route::put('/brta-vehicle-type-edit/{id}', 'Settings\BrtaVehicleTypeController@update')->name('brta-vehicle-type-update');
+
+        //Toll Counter
+        Route::get('/toll-counter', 'Settings\TollCountersController@index')->name('toll-counter-index');
+        Route::post('/toll-counter-list', 'Settings\TollCountersController@dataList')->name('toll-counter-list');
+        Route::post('/toll-counter-add', 'Settings\TollCountersController@store')->name('toll-counter-store');
+        Route::get('/toll-counter-edit/{id}', 'Settings\TollCountersController@edit')->name('toll-counter-edit');
+        Route::put('/toll-counter-edit/{id}', 'Settings\TollCountersController@update')->name('toll-counter-update');
+
+        //Toll Free Vehicle
+        Route::get('/toll-free-vehicle', 'Settings\TollFreeVehicleController@index')->name('toll-free-vehicle-index');
+        Route::post('/toll-free-vehicle-list', 'Settings\TollFreeVehicleController@dataList')->name('toll-free-vehicle-list');
+        Route::post('/toll-free-vehicle-add', 'Settings\TollFreeVehicleController@store')->name('toll-free-vehicle-store');
+        Route::get('/toll-free-vehicle-edit/{id}', 'Settings\TollFreeVehicleController@edit')->name('toll-free-vehicle-edit');
+        Route::put('/toll-free-vehicle-edit/{id}', 'Settings\TollFreeVehicleController@update')->name('toll-free-vehicle-update');
+
+        //Vehicle Rate Chart
+        Route::get('/vehicle-rate-chart', 'Settings\VehicleRateChartController@index')->name('vehicle-rate-chart-index');
+        Route::post('/vehicle-rate-chart-list', 'Settings\VehicleRateChartController@dataList')->name('vehicle-rate-chart-list');
+        Route::post('/vehicle-rate-chart-add', 'Settings\VehicleRateChartController@store')->name('vehicle-rate-chart-store');
+        Route::get('/vehicle-rate-chart-edit/{id}', 'Settings\VehicleRateChartController@edit')->name('vehicle-rate-chart-edit');
+        Route::put('/vehicle-rate-chart-edit/{id}', 'Settings\VehicleRateChartController@update')->name('vehicle-rate-chart-update');
+
+        //Vehicle Special
+        Route::get('/vehicle-special', 'Settings\VehicleSpecialController@index')->name('vehicle-special-index');
+        Route::post('/vehicle-special-list', 'Settings\VehicleSpecialController@dataList')->name('vehicle-special-list');
+        Route::post('/vehicle-special-add', 'Settings\VehicleSpecialController@store')->name('vehicle-special-store');
+        Route::get('/vehicle-special-edit/{id}', 'Settings\VehicleSpecialController@edit')->name('vehicle-special-edit');
+        Route::put('/vehicle-special-edit/{id}', 'Settings\VehicleSpecialController@update')->name('vehicle-special-update');
+
+        //Vehicle Type Mapping
+        Route::get('/vehicle-type-mapping', 'Settings\VehicleTypeMappingController@index')->name('vehicle-type-mapping-index');
+        Route::post('/vehicle-type-mapping-list', 'Settings\VehicleTypeMappingController@dataList')->name('vehicle-type-mapping-list');
+        Route::post('/vehicle-type-mapping-update', 'Settings\VehicleTypeMappingController@update')->name('vehicle-type-mapping-update');
+
+        //Version Control
+        Route::get('/version-control', 'Settings\VersionControlController@index')->name('version-control-index');
+        Route::post('/version-control-list', 'Settings\VersionControlController@dataList')->name('version-control-list');
+        Route::post('/version-control-add', 'Settings\VersionControlController@store')->name('version-control-store');
+        Route::get('/version-control-edit/{id}', 'Settings\VersionControlController@edit')->name('version-control-edit');
+        Route::put('/version-control-edit/{id}', 'Settings\VersionControlController@update')->name('version-control-update');
+
+    });

@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Entities;
+
+use App\Helpers\WebAuth;
+use Illuminate\Database\Eloquent\Model;
+
+class LVehicleTypeMapping extends Model
+{
+    protected $connection = "UTCMS";
+    protected $table = "L_VEHICLE_TYPE_MAPPING";
+    protected $primaryKey  = "BRTA_VEHICLE_TYPE_ID";
+    public $incrementing = false;
+
+    public function bridge(){
+        return $this->belongsTo(LBridge::class, 'bridge_id', 'bridge_id');
+    }
+
+    static function dataProcess($request)
+    {
+
+        $o_STATUS_CODE   = sprintf('%400u', '');
+        $o_STATUS_MESSAGE= sprintf('%4000s', '');
+        $params = [
+            "P_BRTA_VEHICLE_TYPE_ID" =>[
+                "value" => $request->brta_vehicle_type_id,
+                "type" => \PDO::PARAM_INPUT_OUTPUT,
+                "length" => 255
+            ],
+            "P_BRTA_VEHICLE_TYPE_NAME"=> $request->brta_vehicle_type_name,
+            "P_VEHICLE_CLASS_ID"=> $request->vehicle_class_id,
+//          "P_VEHICLE_CLASS_NAME"=> $request->vehicle_class_name,
+            "P_ACTIVE_YN"=> $request->active_yn,
+            "P_BRIDGE_ID"=>  WebAuth::user()->bridge_id,
+            "P_INSERT_BY"=> WebAuth::user()->user_id,
+            "o_STATUS_CODE"   =>&$o_STATUS_CODE,
+            "o_STATUS_MESSAGE"=>&$o_STATUS_MESSAGE
+        ];
+        try {
+            \DB::executeProcedure('UTCMS.SETUPPKG.VEHICLE_TYPE_MAPPING_ENTRY', $params);
+        } catch (\Exception $e) {
+            $params['o_STATUS_CODE'] = 500;
+            $params['o_STATUS_MESSAGE'] = 'Sorry! Something went wrong. Please try gain later.';
+            $params['error'] = $e->getMessage();
+        }
+        return $params;
+    }
+}

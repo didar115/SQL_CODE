@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers\Settings;
+
+
+use App\Entities\LBrtaVehicleType;
+use App\Entities\LPaymentTypes;
+use App\Entities\LVehicleClass;
+use App\Entities\LVehicleTypeMapping;
+use App\Entities\LVehicleTypes;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Validator;
+use DB;
+use Yajra\DataTables\DataTables;
+
+class VehicleTypeMappingController extends Controller
+{
+    public function index()
+    {
+        $data = new LBrtaVehicleType();
+        $vehicleData = LVehicleTypeMapping::all();
+        return view('settings.vehicle-type-mapping.index', ['data' => $data, 'vehicleData' => $vehicleData]);
+    }
+
+
+    //DataTable
+    public function dataList(Request $request)
+    {
+        $data = LVehicleTypeMapping::all();
+        $vehicleClassData = LVehicleClass::all();
+        return DataTables::of($data)->addIndexColumn()
+            ->addColumn('brta_vehicle_type_name', function ($data) {
+                $options = "<input type='hidden' class='v_t_n_id' value='$data->brta_vehicle_type_id'>";
+                $options .= "<div type='text' class='v_t_n_name'> $data->brta_vehicle_type_name</div> ";
+                return $options;
+            })
+
+            ->addColumn('vehicle_class_name', function ($data) use ($vehicleClassData) {
+                $options = "<option value=''>--Select--</option>";
+                foreach ($vehicleClassData as $vcdata) {
+
+                    if($data->vehicle_class_id==$vcdata->vehicle_class_id)
+                    $options .= "<option value='$vcdata->vehicle_class_id' selected>  $vcdata->vehicle_class_name</option>";
+                    else
+                    $options .= "<option value='$vcdata->vehicle_class_id' >  $vcdata->vehicle_class_name</option>";
+                }
+                $soptions = "<select name='vehicle_class_name' class='form-control vehicle_class_id'  onchange='updateBtnChange(this)' required autofocus>               .$options . </select>";
+                return $soptions;
+            })
+
+
+            ->addColumn('status', function ($data) {
+                $options = '<select class="form-control status" onchange="updateBtnChange(this)" name="status" id="status" >';
+                if($data->active_yn=='Y'){
+                $options .= "<option value='Y' selected>Active</option> ";
+                $options .= "<option value='N'>Inactive</option> ";}
+                else{
+                $options .= "<option value='Y' >Active</option> ";
+                $options .= "<option value='N' selected>Inactive</option> ";
+                $options .= "</select>";}
+                return $options;
+            })
+
+            ->addColumn('action', function ($data) {
+                $action = '<div class="btn-group ">';
+                $action .= '<button type="button" id="updateBtn" onclick="storeData(this)"  name="update" class=" btn btn-sm btn-dark btnActive js-tooltip-enabled m-1" data-toggle="tooltip" title="Update" data-original-title="Edit">
+                                Update
+                            </button>';
+                $action .= '</div>';
+                return $action;
+            })
+            ->escapeColumns('vehicle_class_name')
+            ->make(true);
+    }
+
+    public function update(Request $request)
+
+    {
+        $data = \App\Entities\LVehicleTypeMapping::dataProcess($request);
+        if ($data['o_STATUS_CODE'] == 1) {
+            return redirect()->back()->with('success', $data['o_STATUS_MESSAGE']);
+        }
+        return redirect()->back()->with('error', $data['o_STATUS_MESSAGE'])->withInput();
+
+    }
+
+}
