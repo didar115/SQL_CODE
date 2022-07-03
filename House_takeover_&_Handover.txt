@@ -1,0 +1,79 @@
+SELECT A.HOUSE_ID,
+          'ID'
+       || ' : '
+       || E.EMP_ID
+       || ' , '
+       || CHR (10)
+       || 'NAME'
+       || ' : '
+       || E.EMP_NAME
+       || ' , '
+       || CHR (10)
+       || 'DESIGNATION'
+       || ' : '
+       || E.DESIGNATION
+       || ' , '
+       || CHR (10)
+       || 'DEPARTMENT'
+       || ' : '
+       || E.DEPARTMENT_NAME     AS EMPLOYEE_DETAILS,
+          'HOUSE'
+       || ' : '
+       || hl.HOUSE_NAME
+       || ' , '
+       || CHR (10)
+       || 'SIZE'
+       || ' : '
+       || hl.HOUSE_SIZE
+       || ' , '
+       || CHR (10)
+       || 'BUILDING'
+       || ' : '
+       || bl.BUILDING_NAME
+       || ' , '
+       || CHR (10)
+       || 'COLONY'
+       || ' : '
+       || c.COLONY_NAME         AS "HOUSE DETAILS",
+       NULL                     AS DELIVERY_DATE,
+       AL.ALLOT_LETTER_DATE     AS "ALLOTED DATE",
+       T.ELECTRICAL_FITTINGS    AS "ELECTRICAL FITTING",
+       T.SANITARY_FITTINGS      AS "SANITARY FITTING",
+       T.TAKE_OVER_DATE,
+       H.ELECTRICAL_FITTINGS    AS "ELECTRICAL FITTINGS",
+       H.SANITARY_FITTINGS      AS "SANITARY FITTINGS",
+       H.ELEC_HAND_OVER_DATE,
+       H.CIVIL_HAND_OVER_DATE,
+       M.ADV_NUMBER
+       
+  FROM HAS.HOUSE_ALLOTTMENT  A,
+       HAS.ALLOT_LETTER      AL,
+       HAS.EMPLOYEE_INFO     E,
+       HAS.HOUSE_LIST        hl,
+       HAS.L_COLONY          c,
+       HAS.BUILDING_LIST     bl,
+       HAS.TAKE_OVER         T,
+       HAS.HAND_OVER         H,
+       HAS.HA_ADV_MST        M
+       
+ WHERE     A.HOUSE_ID = hl.HOUSE_ID(+)
+       AND A.ALLOT_LETTER_ID = AL.ALLOT_LETTER_ID(+)
+       AND A.EMP_ID = E.EMP_ID(+)
+       AND hl.COLONY_ID = c.COLONY_ID(+)
+       AND hl.BUILDING_ID = bl.BUILDING_ID(+)
+       AND A.TAKE_OVER_ID = T.TAKE_OVER_ID(+)
+       AND T.TAKE_OVER_ID = H.TAKE_OVER_ID(+)
+       AND A.ADVERTISEMENT_ID = M.ADV_ID(+)
+       AND (e.dpt_department_id = :p_dpt_department_id OR :p_dpt_department_id IS NULL)
+       AND (hl.COLONY_ID = :p_colony_id OR :p_colony_id is null)
+       AND (hl.HOUSE_TYPE_ID = :p_house_type_id OR :p_house_type_id IS NULL)
+       AND (hl.BUILDING_ID = :p_building_id OR :p_building_id IS NULL)
+       --  AND (A.HOUSE_ID =  :p_house_id or :p_house_id is null)
+       AND (A.HOUSE_ID = :p_house_id_by_building OR :p_house_id_by_building IS NULL)
+       AND (:p_start_date <= TRUNC (A.APPROVAL_DATE) OR :p_start_date IS NULL)
+       AND (:p_end_date >= TRUNC (A.APPROVAL_DATE) OR :p_end_date IS NULL)
+       
+       
+       
+         
+       /* query of : http://192.168.78.25:9502/xmlpserver/~weblogic/HAS/RPT_HOUSE_TAKEOVER_AND_HANDOVER_DETAILS.xdo */
