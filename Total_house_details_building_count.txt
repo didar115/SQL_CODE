@@ -1,0 +1,27 @@
+SELECT count(*) building_name_count
+  FROM (  SELECT distinct bl.building_name,
+                 COUNT (bl.building_name) over ( partition by  bl.building_name )     building_name_2
+            FROM has.house_list hl
+                 LEFT JOIN has.house_allottment ha ON hl.house_id = ha.house_id
+                 LEFT JOIN has.l_colony lc ON hl.colony_id = lc.colony_id
+                 LEFT JOIN pmis.employee em ON ha.emp_id = em.emp_id
+                 LEFT JOIN has.l_house_status hs
+                     ON hl.house_status_id = hs.house_status_id
+                 LEFT JOIN has.building_list bl
+                     ON bl.building_id = hl.building_id
+                 LEFT JOIN has.l_house_type ht
+                     ON hl.house_type_id = ht.house_type_id
+           WHERE     ha.ALLOT_YN = 'Y'
+                 AND (lc.colony_id = :p_colony_id OR :p_colony_id IS NULL)
+                 AND (   ht.house_type_id = :p_house_type_id
+                      OR :p_house_type_id IS NULL)
+                 AND (   hs.house_status_id = :p_HOUSE_STATUS_ID
+                      OR :p_HOUSE_STATUS_ID IS NULL)
+                 AND (   :p_start_date <= TRUNC (ha.approval_date)
+                      OR :p_start_date IS NULL)
+                 AND (   :p_end_date >= TRUNC (ha.approval_date)
+                      OR :p_end_date IS NULL)
+--        GROUP BY bl.building_name 
+        )x
+
+/* Query of :  http://192.168.78.25:9502/xmlpserver/~weblogic/HAS/RPT_TOTAL_HOUSE_DETAILS.xdo */
