@@ -1,0 +1,32 @@
+WITH
+    sac
+    AS
+        (  SELECT ls.grade grade, SUM (ls.sanctioned_post) sanction_post, NULL
+             FROM l_sanctioned_post ls
+         GROUP BY ls.grade
+         ORDER BY ls.grade),
+    curr
+    AS
+        (SELECT grade,
+                designation_id,
+                (SELECT designation
+                   FROM l_designation
+                  WHERE designation_id = qu.designation_id)
+                    AS designation,
+                currect_post
+           FROM (  SELECT e.ACTUAL_GRADE_ID        AS grade,
+                          e.designation_id,
+                          '       ' ||'নিয়মিত'||' - '||COUNT  (CASE WHEN e.EMP_STATUS_ID in (1,2,6,10) THEN 1  END) ||'           '||'ডেপুটেশন '||' - '|| COUNT(CASE WHEN e.EMP_STATUS_ID = 13 THEN 13 END)    AS currect_post
+                     FROM employee e 
+                    WHERE e.emp_status_id in (1,2,6,10,13)
+                 GROUP BY e.ACTUAL_GRADE_ID, e.designation_id
+                 ORDER BY e.ACTUAL_GRADE_ID) qu)
+SELECT sac.grade,
+       sanction_post,
+       curr.currect_post,
+       curr.designation,
+       null
+  FROM sac, curr
+ WHERE sac.grade = curr.grade 
+ AND sac.grade = NVL ( :p_grade, sac.grade)
+ AND CURR.designation_id = NVL ( :p_designation_id, CURR.designation_id)

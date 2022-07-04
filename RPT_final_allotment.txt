@@ -1,0 +1,71 @@
+SELECT    HL.DORMITORY_YN, HL.HOUSE_SIZE, M.ADV_NUMBER,
+       SYSDATE
+           AS PUB_DATE,
+       E.EMP_ID,
+       E.EMP_CODE,
+          '১ । চবক বোর্ড সিদ্ধান্ত নং- '
+       || A.BOARD_DECISION_NUMBER
+       || ', '
+       || 'তারিখঃ '
+       || A.APPROVAL_DATE
+       || ' '
+       || 'মোতাবেক '
+       || ' '
+       || NVL (E.EMP_NAME_BNG, E.EMP_NAME)
+       || ' '
+       || NVL (DG.DESIGNATION_BNG, DG.DESIGNATION)
+       || ' '
+       || NVL (D.DEPARTMENT_NAME_BNG, D.DEPARTMENT_NAME)
+           AS G1,
+       CASE
+           WHEN A.SPECIAL_CONSIDERATION_YN = 'Y'
+           THEN
+                  'বিশেষ বিবেচনায় '
+               || A.SPECIAL_REMARKS
+           ELSE
+               '/ চবক এর অনুকুলে মানবিক কারনে  '
+       END
+           AS G2,
+          NVL (C.COLONY_NAME_BNG, C.COLONY_NAME)
+       || ', '
+       || NVL (B.BUILDING_NAME_BNG, B.BUILDING_NAME)
+       || ', '
+       || NVL (HL.HOUSE_NAME_BNG, HL.HOUSE_NAME)
+       || ', ' 
+       
+        
+       ||
+       case when hl.DORMITORY_YN = 'N' then  HL.HOUSE_SIZE  ||  ' sq ft বাসাটি বরাদ্দ / ষ্টে–অর্ডার  প্রদান করা গেল।  '
+       when hl.DORMITORY_YN = 'Y' then  hl.HOUSE_CODE ||' নম্বর ( ' || HL.HOUSE_SIZE|| ' টী ) সীট প্রদান করা গেল। '  
+       end
+           AS G3,
+           
+       A.SPECIAL_CONSIDERATION_YN
+           AS SPECIAL,
+       A.SPECIAL_REMARKS,
+       A.HOUSE_ID,
+       HL.HOUSE_CODE,
+       al.MEMO_NO,
+       ' ' AS BLANK_COL
+       
+  FROM HAS.HOUSE_ALLOTTMENT  A
+       LEFT JOIN HA_ADV_MST M ON A.ADVERTISEMENT_ID = M.ADV_ID
+       LEFT JOIN PMIS.EMPLOYEE E ON E.EMP_ID = A.EMP_ID
+       LEFT JOIN PMIS.L_DESIGNATION DG
+           ON E.DESIGNATION_ID = DG.DESIGNATION_ID
+       LEFT JOIN PMIS.L_DEPARTMENT D ON E.DPT_DEPARTMENT_ID = D.DEPARTMENT_ID
+       LEFT JOIN HOUSE_LIST HL ON A.HOUSE_ID = HL.HOUSE_ID
+       LEFT JOIN BUILDING_LIST B ON HL.BUILDING_ID = B.BUILDING_ID
+       LEFT JOIN L_COLONY C ON B.COLONY_ID = C.COLONY_ID
+       LEFT JOIN HAS.ALLOT_LETTER al
+           ON A.ALLOT_LETTER_ID = al.ALLOT_LETTER_ID
+           
+ WHERE (E.EMP_CODE =:p_EMPL_CODE OR :p_EMPL_CODE IS NULL )
+ 
+ 
+ 
+ /* 
+ 
+ Query of : http://192.168.78.25:9502/xmlpserver/~weblogic/HAS/RPT_Final_Allotment_Letter.xdo 
+ 
+ */

@@ -1,0 +1,7 @@
+ <div>
+           <input name="number" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" id="txt_search" maxlength="30" name="txt_search"
+                  class="form-control input-field font-italic" placeholder="e.g:1050540548048">
+ </div>
+
+
+
